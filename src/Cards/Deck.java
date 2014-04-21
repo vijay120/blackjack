@@ -2,6 +2,7 @@ package Cards;
 
 import java.util.ArrayList;
 
+import Cards.Card.CardFace;
 import Cards.Card.Rank;
 import Cards.Card.Suit;
 
@@ -14,11 +15,10 @@ public class Deck {
 		
 		for(Suit s : Suit.values()) {
 			for(Rank r : Rank.values()) {
-				Card card = new Card(s, r, false);
+				Card card = new Card(s, r, CardFace.FaceUp);
 				internalDeck.add(card);
 			}	
 		}
-		assert(internalDeck.size() == 52);
 	}
 	
 	public ArrayList<Card> getDeck() {

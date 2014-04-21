@@ -7,11 +7,15 @@ public class Person {
 	private String name;
 	
 	public enum PersonAction {
-		HIT, STAND;
+		HIT, STAND, LOGOUT, LOGIN;
 	}
 	
 	public Person(String name) {
 		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	private ArrayList<Card> currentGameCards = new ArrayList<Card>();
@@ -24,10 +28,8 @@ public class Person {
 		this.currentGameCards.add(c);
 	}
 	
-	@Override
-	public String toString() {
-		return this.name;
+	public void resetDeck() {
+		this.currentGameCards = new ArrayList<Card>();
 	}
-	
 
 }

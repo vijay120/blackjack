@@ -1,120 +1,51 @@
 package Cards;
 
-import java.util.ArrayList;
-
+import Cards.Card.CardFace;
 import Cards.Person.PersonAction;
+import Cards.GameLogic.PlayerAndDealer;
 
-public class GameBoard {
-	
-	public enum GameState {
-		PlayerWon, DealerWon, Draw, Continue, Unknown
-	}
-	
-	private Player player;
-	private Dealer dealer;
-	private Decks decks;
-	private GameLogic logic;
-	
-	public GameBoard(Player player, Decks decks) {
+
+/*
+ * This is an abstract class that can be extended to many similar cards games like blackjack, poker etc.
+ * However, the main limitation is that this class solves single dealer-player games.
+ */
+public abstract class GameBoard {
+			
+	public Player player;
+	public Dealer dealer;
+	public Decks decks;
+	public GameLogic logic;
 		
+	/*
+	 * Constructor sets up the game board state for a dealer-player game and sets up the game logic
+	 */
+	public GameBoard(Player player, Decks decks, GameLogic logic) {
 		this.player = player;	
 		this.decks = decks;
 		this.dealer = new Dealer("dealer");
-		this.logic = new BlackjackLogic();
-		
-		System.out.println("The deck size is" + Integer.toString(this.decks.allCards.size()));
-		
+		this.logic = logic;
 	}
 	
-	public void initializeGame() {
-		//first card is set down on the dealer
-		dealPerson(this.dealer, true);
-		dealPerson(this.dealer, false);
-		
-		for(int i=0; i<2; i++) {
-			dealPerson(this.player, false);
-		}
-		
-		printPersonState(this.dealer);
-		printPersonState(this.player);
-	}
+	/*
+	 * This method is used for distributing the initial set of cards to the player and dealer
+	 * in order to start a game.
+	 */
+	public abstract void initializeGame();
+			
 	
-	private void dealPerson(Person p, Boolean down) {
+	/*
+	 * This method is used to update the game state after an user action. This will involve manipulating
+	 * the person's deck of cards after the action.
+	 */
+	public abstract void dealCardsBasedOnAction(PersonAction action);
+		
+	public void dealCardToPersonFaceUpOrDown(Person p, CardFace upOrDown) {
 		Card c = this.decks.popCard();
-		c.setFlipped(down);
+		c.setCardFace(upOrDown);		
 		p.pushCurrentGameCard(c);
 	}
 	
-	private void printPersonState(Person p) {
-		System.out.print("Person name and states are: ");
-		System.out.println(p.toString());
-		for(Card c : p.getCurrentGameCards()) {
-			System.out.println(c.toString());
-		}
-		//calculate person's cards
-		System.out.println(this.logic.playerCardsValue(p));
+	public PlayerAndDealer getPlayerAndDealer() {
+		return new PlayerAndDealer(this.player, this.dealer);
 	}
-	
-	
-	public GameState dealAndIsGameOver(PersonAction action) {
-		
-		if(action == PersonAction.HIT) {
-			Card c = this.decks.popCard();
-			c.setFlipped(false);
-			this.player.pushCurrentGameCard(c);
-			
-			printPersonState(this.dealer);
-			printPersonState(this.player);
-			
-			if(this.logic.playerCardsValue(this.player) > 21 ) {
-				return GameState.DealerWon;
-			}
-			else if(this.logic.playerCardsValue(this.player) == 21) {
-				return GameState.PlayerWon;
-			}
-			else {
-				return GameState.Continue;
-			}
-			
-		}
-		
-		if(action == PersonAction.STAND) {
-
-			//flip the dealer's first card
-			this.dealer.getCurrentGameCards().get(0).setFlipped(false);
-
-			do {
-				System.out.println("inside this loop");
-				Card c = this.decks.popCard();
-				c.setFlipped(false);
-				this.dealer.pushCurrentGameCard(c);
-			} while(this.logic.playerCardsValue(this.dealer) < this.logic.playerCardsValue(this.player));
-			
-			printPersonState(this.dealer);
-			printPersonState(this.player);
-
-			if(this.logic.playerCardsValue(this.dealer) > 21) {
-				return GameState.PlayerWon;
-			} 
-			else if(this.logic.playerCardsValue(this.dealer) == 21) {
-				//this assumes the player would have already hit and won if he got a 21
-				return GameState.DealerWon;
-			}
-			else if(this.logic.playerCardsValue(this.dealer) > this.logic.playerCardsValue(this.player)) {
-				return GameState.DealerWon;
-			}
-			else {
-				return GameState.PlayerWon;
-			}
-		}
-		
-		else {
-			return GameState.Unknown;
-		}
-						
-	}
-	
-	
-	
-
 }

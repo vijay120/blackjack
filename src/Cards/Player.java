@@ -16,5 +16,14 @@ public class Player extends Person {
 	public void addChips(int chips) {
 		this.chips += chips;
 	}
+	
+	public void subtractChips(int chips) {
+		this.chips -= chips;
+	}
+	
+	@Override
+	public String toString() {
+		return getName() + " Number of chips: " + Integer.toString(this.chips);
+	}
 
 }

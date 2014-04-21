@@ -6,18 +6,24 @@ public class Card {
 		DIAMOND, CLUB, HEART, SPADE 
 	}
 	
+	// Warning: The numbered cards are positioned so that their ordinal values will give
+	// their actual values. Do not change the ordering here.
 	public enum Rank {
 		KING, QUEEN, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, ACE		
 	}
 	
+	public enum CardFace {
+		FaceUp, FaceDown
+	}
+	
 	private Suit suit;
 	private Rank rank;
-	private Boolean down;
+	private CardFace upOrDown;
 	
-	public Card(Suit suit, Rank rank, Boolean down) {
+	public Card(Suit suit, Rank rank, CardFace upOrDown) {
 		this.suit = suit;
 		this.rank = rank;
-		this.setFlipped(down);
+		this.setCardFace(upOrDown);
 	}
 
 	public Suit getSuit() {
@@ -28,21 +34,23 @@ public class Card {
 		return rank;
 	}
 
-	public Boolean getFlipped() {
-		return down;
+	public CardFace getCardFace() {
+		return this.upOrDown;
 	}
 
-	public void setFlipped(Boolean down) {
-		this.down = down;
+	public void setCardFace(CardFace upOrDown) {
+		this.upOrDown = upOrDown;
 	}
 
 	@Override
 	public String toString() {
-		if(!this.down) {
+		
+		//If the card face is up, show the value. If not, dont show the value;
+		if(this.upOrDown == CardFace.FaceUp) {
 			return this.suit.toString() + " " + this.rank.toString();
 		}
 		else {
-			return "";
+			return "Card Face Down";
 		}
 	}
 	

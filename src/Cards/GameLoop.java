@@ -1,14 +1,96 @@
 package Cards;
 
 import java.util.Date;
-import java.io.IOException;
 import java.util.Scanner;
 
-import Cards.GameBoard.GameState;
+import Cards.GameLogic.Outcome;
+import Cards.GameLogic.PlayerAndDealer;
 import Cards.Person.PersonAction;
 
-public class GameLoop {
 
+public class GameLoop {
+	
+	private static final int NUMBEROFCHIPS = 100;
+	private static final int NUMBEROFDECKS = 10;
+	private static final int NUMBEROFSHUFFLES = 1000;
+	
+	public static void main(String[] args) {
+		
+		Scanner scanner = new Scanner(System.in);		
+		
+		//lets play one round with one player
+		System.out.println("What is your name?");
+		String playerName = scanner.next();
+		
+		Player player = new Player(playerName, NUMBEROFCHIPS);
+	
+		while(player.getChips() > 0) {
+			
+			Date dateForRandomSeed = new Date();
+			
+			System.out.println("Do you want to play? (yes/no)");
+			String wantToPlay = scanner.next();
+			PersonAction wagerAction = parseMove(wantToPlay);
+			if(wagerAction == PersonAction.LOGOUT) {
+				break;
+			}
+			
+			System.out.println("How much do you want to bet?");
+			int bet = scanner.nextInt();
+			
+			while(bet > player.getChips()) {
+				System.out.println("Bet is bigger than your chips' value. Try again.");
+				bet = scanner.nextInt();
+			}
+			
+			//remove chips from player
+			player.subtractChips(bet);
+			
+			
+			//lets make a few decks
+			Decks new_deck = new Decks(NUMBEROFDECKS, NUMBEROFSHUFFLES, dateForRandomSeed.getTime());
+			
+			//set the logic to be blackjack
+			GameLogic logic = new BlackjackLogic();
+			
+			//initialize the game
+			GameBoard board = new BlackjackGameBoard(player, new_deck, logic);
+			board.initializeGame();
+			
+			
+			PersonAction action;
+			Outcome outcome = null;
+			
+			do {
+				System.out.println("What is your move (hit/stand) ?");
+				String move = scanner.next();
+				action = parseMove(move);
+				
+				if(action == PersonAction.LOGOUT) {
+					break;
+				}
+				
+				board.dealCardsBasedOnAction(action);
+				PlayerAndDealer playerAndDealer = board.getPlayerAndDealer();
+				outcome = logic.decideGameOutcome(playerAndDealer, action);
+				
+			} while(outcome.equals(Outcome.Continue) || outcome.equals(Outcome.Unknown));
+			
+			System.out.println(outcome.toString());
+			
+			if(outcome == Outcome.PlayerWon) {
+				player.addChips(2*bet);
+			}
+			
+			player.resetDeck();
+			
+		}
+		
+		scanner.close();
+	}
+	
+	
+	
 	private static PersonAction parseMove(String move) {
 		
 		if(move.equals("hit")) {
@@ -17,38 +99,13 @@ public class GameLoop {
 		else if(move.equals("stand")) {
 			return PersonAction.STAND;
 		}
-		else {
-			return null;
+		else if(move.equals("yes")) {
+			return PersonAction.LOGIN;
 		}
-		
-	}
-	
-	public static void main(String[] args) {
-		
-		Scanner scanner = new Scanner(System.in);		
-		Date d = new Date();
-		
-		//lets play one round with one player
-		Player Vijay = new Player("Vijay", 100);
-		
-		//lets make a few decks
-		Decks new_deck = new Decks(10, 1000, d.getTime());
-		
-		//initialize the game
-		GameBoard board = new GameBoard(Vijay, new_deck);
-		board.initializeGame();
-		
-		PersonAction action;
-		GameState state;
-		do {
-			System.out.println("What is your move?");
-			String move = scanner.next();
-			action = parseMove(move);
-			state = board.dealAndIsGameOver(action);
-			
-		} while(state.equals(GameState.Continue));
-		
-		System.out.println(state.toString());
+		//I designed the system so that any other anamolous commands will exit the system
+		else {
+			return PersonAction.LOGOUT;
+		}
 		
 	}
 	

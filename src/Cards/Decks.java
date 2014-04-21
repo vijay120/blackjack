@@ -30,8 +30,6 @@ public class Decks {
 		for(int i=0; i<number_of_shuffles; i++) {
 			int first_index = Math.abs(r.nextInt() % allCards.size());
 			int second_index = Math.abs(r.nextInt() % allCards.size());
-			System.out.println("In shuffle, first index is: " + Integer.toString(first_index));
-			System.out.println("In shuffle, second index is: " + Integer.toString(second_index));
 			swap(first_index, second_index);
 		}
 	}
