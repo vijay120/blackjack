@@ -1,5 +1,7 @@
 package Cards;
 
+import java.util.ArrayList;
+
 import Cards.Card.CardFace;
 import Cards.Card.Rank;
 import Cards.Person.PersonAction;
@@ -9,27 +11,19 @@ import Cards.Person.PersonAction;
  */
 public class BlackjackLogic extends GameLogic {
 		
-	private enum TypeOfHand {
-		HARD, SOFT
-	}
-		
 	// This method calculates the card value depending on the type of hand given.
-	public int getCardValue(Card card, TypeOfHand faceUpOrDown) {
+	public int getCardValue(Card card) {
 		
 		// If the card face is down, do not add the value of the card to the publicly advertised value.
 		if(card.getCardFace() == CardFace.FaceDown) {
 			return 0;
 		}
 		
-		// Since ACE is a special card whose value depends on whether one has a hard or a soft hand,
-		// this logic is needed.
+		// Since ACE is a special card whose value depends on whether one has a hard or a soft hand.
+		// We default the card to a soft hand until we exceed 21 for the deck. This logic for converting
+		// to hard is handled in the playerCardsValue method.
 		if(card.getRank() == Rank.ACE) {
-			if(faceUpOrDown == TypeOfHand.HARD) {
-				return 11;
-			}
-			else{
-				return 1;
-			}
+			return 11;
 		}
 		// All the other royals get a value of 10 
 		else if(card.getRank() == Rank.KING || card.getRank() == Rank.QUEEN || card.getRank() == Rank.JACK) {
@@ -43,32 +37,44 @@ public class BlackjackLogic extends GameLogic {
 		else {
 			return card.getRank().ordinal();
 		}
-		
 	}
 	
-	// This method calculates the player's deck's total value assuming he/she is using a hard hand. If the hard hand
-	// is greater than 21, the soft hand approach is used. 
+	//This method defaults to valuating the cards to the "soft" value until the hard value is needed.
 	public int playerCardsValue(Person p) {
-		int hardValue = playerValue(p, TypeOfHand.HARD);
 		
-		if(hardValue > 21) {
-			return playerValue(p, TypeOfHand.SOFT);
-		}
-		else {
-			return hardValue;
-		}
-	}
-
-	private int playerValue(Person p, TypeOfHand faceUpOrDown) {
-		int totalValue = 0;
+		int finalValue = 0;
 		
 		for(Card c : p.getCurrentGameCards()) {
-			totalValue += getCardValue(c, faceUpOrDown);
+			finalValue += getCardValue(c);
 		}
 		
-		return totalValue;
+		if(finalValue > 21) {
+			//since the final value is greater than 21, lets us negate 10 for each Ace in the deck
+			int numOfAces = numberOfAcesInDeck(p.getCurrentGameCards());
+			
+			for(int i=1; i <= numOfAces; i++) {
+				finalValue -= 10;
+				
+				//If the value is less than 21, then break out since this will be the optimum value
+				if(finalValue <= 21) {
+					break;
+				}
+			}
+		}
+		
+		return finalValue;
 	}
 	
+	public int numberOfAcesInDeck(ArrayList<Card> deck) {
+		int aceCounter = 0;
+		for(Card c : deck) {
+			if(c.getRank() == Rank.ACE) {
+				aceCounter++;
+			}
+		}
+		return aceCounter;
+	}
+		
 	public Outcome decideGameOutcome(PlayerAndDealer playerAndDealer, PersonAction action) {
 		
 		Person player = playerAndDealer.player;

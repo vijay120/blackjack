@@ -3,6 +3,9 @@ package Cards;
 import Cards.Card.CardFace;
 import Cards.Person.PersonAction;
 
+/*
+ * This class is responsible for dealing the cards to the player and the dealer after an action
+ */
 public class BlackjackGameBoard extends GameBoard {
 
 	public BlackjackGameBoard(Player player, Decks decks, GameLogic logic) {

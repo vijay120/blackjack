@@ -8,6 +8,11 @@ import Cards.GameLogic.PlayerAndDealer;
 import Cards.Person.PersonAction;
 
 
+/*
+ * This is main driver class for the application. Its responsibility is to get user input,
+ * sanitize it, pass it to the game board and gather the outcome of the game. It is similar
+ * to the logic of the dealer in the game, with the state of cards that the dealer has.
+ */
 public class GameLoop {
 	
 	private static final int NUMBEROFCHIPS = 100;

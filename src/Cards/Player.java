@@ -1,5 +1,8 @@
 package Cards;
 
+/*
+ * This class is responsible for keeping the state of a player
+ */
 public class Player extends Person {
 		
 	private int chips;

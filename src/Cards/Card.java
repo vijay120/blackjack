@@ -1,5 +1,10 @@
 package Cards;
 
+
+/*
+ * This class is responsible for keeping the state of a playing card. It also has the state
+ * of the card being face up or down, which matters on who sees the card in all card games.
+ */
 public class Card {
 	
 	public enum Suit {
