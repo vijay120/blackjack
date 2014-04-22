@@ -104,5 +104,4 @@ public class BlackjackLogicTest {
 		assertEquals(logic.decideGameOutcome(testPackage, PersonAction.HIT), Outcome.Continue);
 	}
 
-
 }

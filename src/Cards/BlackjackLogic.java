@@ -95,7 +95,8 @@ public class BlackjackLogic extends GameLogic {
 			return Outcome.PlayerWon;
 		}
 		//These two cases below are less stronger conditions when the dealer outperforms the player within the 21 bound
-		//and vice versa for the second case.
+		//and vice versa for the second case. We already know that the dealer's total card value will have to be above 17
+		//since that in enforced by the game board.
 		else if(playerCardsValue(dealer) > playerCardsValue(player)) {
 			if(action == PersonAction.HIT) {
 				return Outcome.Continue;				

@@ -16,7 +16,7 @@ import Cards.Person.PersonAction;
 public class GameLoop {
 	
 	private static final int NUMBEROFCHIPS = 100;
-	private static final int NUMBEROFDECKS = 10;
+	private static final int NUMBEROFDECKS = 1;
 	private static final int NUMBEROFSHUFFLES = 1000;
 	
 	public static void main(String[] args) {
@@ -48,6 +48,11 @@ public class GameLoop {
 				bet = scanner.nextInt();
 			}
 			
+			while(bet <= 0) {
+				System.out.println("You need to bet atleast 1 chip. Try again.");
+				bet = scanner.nextInt();
+			}
+			
 			//remove chips from player
 			player.subtractChips(bet);
 			
@@ -69,13 +74,19 @@ public class GameLoop {
 			do {
 				System.out.println("What is your move (hit/stand) ?");
 				String move = scanner.next();
+				
+				//get action from player
 				action = parseMove(move);
 				
 				if(action == PersonAction.LOGOUT) {
 					break;
 				}
 				
+				//let the gameboard deal the cards based on player action
 				board.dealCardsBasedOnAction(action);
+				
+				//package the player and dealer and send it off to the game logic module
+				//to arbitrate if the game should continue or decide a winner
 				PlayerAndDealer playerAndDealer = board.getPlayerAndDealer();
 				outcome = logic.decideGameOutcome(playerAndDealer, action);
 				

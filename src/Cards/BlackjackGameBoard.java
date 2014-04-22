@@ -42,14 +42,20 @@ public class BlackjackGameBoard extends GameBoard {
 			//flip the dealer's first card
 			this.dealer.getCurrentGameCards().get(0).setCardFace(CardFace.FaceUp);
 
-			//Deal cards to the dealer until his/her deck value is greater than the player's.
+			//Deal cards to the dealer until his/her deck value is greater than the player's and his card's absolute value is equal to or above 17.
 			do {
 				dealCardToPersonFaceUpOrDown(this.dealer, CardFace.FaceUp);
-			} while(this.logic.playerCardsValue(this.dealer) < this.logic.playerCardsValue(this.player));
+			} while(checkIfDealerShouldBeGivenAnotherCard());
 		}
 		
 		printGameState();						
 	}	
+	
+	//This check is to make sure that the dealer will have to hit until his card values are above 17 and his card values are more than the players
+	private Boolean checkIfDealerShouldBeGivenAnotherCard() {
+		return 	this.logic.playerCardsValue(this.dealer) < this.logic.playerCardsValue(this.player) || 
+				this.logic.playerCardsValue(this.dealer) < 17;
+	}
 	
 	public void printGameState() {
 		printPersonStats(this.dealer);
