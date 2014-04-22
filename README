@@ -1,8 +1,5 @@
 Author: Vijay Ramakrishnan
 
-This project is a text-based java blackjack implementation. It assumes a single player-dealer relationship
-and has functionality of two blackjack actions, "HIT" and "STAND". It also assumes the american version of
-the game, which invovles having a hole card for the dealer.
+This project is a text-based java blackjack implementation. It assumes a single player-dealer relationship and has functionality of two blackjack actions, "HIT" and "STAND". It also assumes the american version ofthe game, which invovles having a hole card for the dealer.
 
-In order to run the application, open the project in your favorite IDE, open the file "GameLoop.java" and
-run the application. The directions will be indicated on the console as text-based prompts.
+In order to run the application, open the project in your favorite IDE, open the file "GameLoop.java" and run the application. The directions will be indicated on the console as text-based prompts.
